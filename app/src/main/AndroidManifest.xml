@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
     <!--
  The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but are recommended.
@@ -26,13 +27,25 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
+            android:name=".FirstScreen"
+            android:label="@string/title_activity_first_screen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" >
+        </activity>
+        <activity
+            android:name=".ReleaseParking"
+            android:label="@string/title_activity_release_parking" >
+        </activity>
+        <activity
+            android:name=".ParkingMarkerActivity"
+            android:label="@string/title_activity_parking_marker" >
         </activity>
     </application>
 

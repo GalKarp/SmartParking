@@ -1,11 +1,14 @@
 package smartparking.smartparking;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity {
@@ -22,15 +26,72 @@ public class MapsActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        zoomOnMyLocation();
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Intent releaseParkingActivity = new Intent(MapsActivity.this, ParkingMarkerActivity.class);
+                startActivity(releaseParkingActivity);
+                return false;
+            }
+        });
+
+        // show the user all available parking slots (taken from DB)
+
+
+        /// TO DO
+
+
+
+       ///////////////////////////////////////////////////////////////
+
+    }
+
+    private void zoomOnMyLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // Create a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Get the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Get Current Location
+        Location myLocation = locationManager.getLastKnownLocation(provider);
+        // Get latitude of the current location
+        double latitude = myLocation.getLatitude();
+
+
+        // Get longitude of the current location
+        double longitude = myLocation.getLongitude();
+
+
+        // Create a LatLng object for the current location
+        LatLng latLng = new LatLng(latitude, longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+        // Zoom in the Google Map
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        onBackPressed();
+        return true;
     }
 
     /**
@@ -68,8 +129,6 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker").snippet("Snippet"));
-
         // Enable MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
 
@@ -91,8 +150,10 @@ public class MapsActivity extends FragmentActivity {
         // Get latitude of the current location
         double latitude = myLocation.getLatitude();
 
+
         // Get longitude of the current location
         double longitude = myLocation.getLongitude();
+
 
         // Create a LatLng object for the current location
         LatLng latLng = new LatLng(latitude, longitude);
@@ -108,10 +169,25 @@ public class MapsActivity extends FragmentActivity {
         mMap.animateCamera(yourLocation);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(myCoordinates)      // Sets the center of the map to LatLng (refer to previous snippet)
-                .zoom(17)                   // Sets the zoom
+                .zoom(0)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+      //  for (int i = 0; i < yourArrayList.size(); i++) {
+
+       //     double lati=Double.parseDouble(pins.get(i).latitude);
+        //    double longLat=Double.parseDouble(pins.get(i).longitude);
+
+     //   }
+    }
+
+    private void addMarkerOnCurrentLocation(){
+        Criteria criteria = new Criteria();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(criteria, true);
+        Location myLocation = locationManager.getLastKnownLocation(provider);
+        LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
     }
 }
