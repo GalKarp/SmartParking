@@ -20,7 +20,8 @@ import com.parse.ParseObject;
 
 public class FirstScreen extends Activity {
     private Button findParking,releaseParking,saveParking;
-
+    double latitude, longitude;
+    String longiStr, latiStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +33,9 @@ public class FirstScreen extends Activity {
         findParking = (Button)(findViewById(R.id.findParking));
         releaseParking = (Button)(findViewById(R.id.releaseParking));
         saveParking = (Button)(findViewById(R.id.releaseParking));
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+//        ParseObject testObject = new ParseObject("TestObject");
+//        testObject.put("foo", "bar");
+//        testObject.saveInBackground();
         findParking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,15 +43,6 @@ public class FirstScreen extends Activity {
                 startActivity(findParkingActivity);
             }
         });
-        releaseParking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent releaseParkingActivity = new Intent(FirstScreen.this, ReleaseParking.class);
-                startActivity(releaseParkingActivity);
-            }
-        });
-//        testObject.put("foo", "bar");
-//        testObject.saveInBackground();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // Create a criteria object to retrieve provider
@@ -62,24 +54,45 @@ public class FirstScreen extends Activity {
         // Get Current Location
         Location myLocation = locationManager.getLastKnownLocation(provider);
         // Get latitude of the current location
-        final double latitude = myLocation.getLatitude();
-
+         latitude = myLocation.getLatitude();
+        latiStr = String.valueOf(latitude);
 
         // Get longitude of the current location
-        final double longitude = myLocation.getLongitude();
-
-
-
-
-        saveParking.setOnClickListener(new View.OnClickListener() {
+        longitude = myLocation.getLongitude();
+         longiStr = String.valueOf(longitude);
+//          ParseObject testObject = new ParseObject("TestObject");
+//        testObject.put("andrey", "gal");
+//        testObject.saveInBackground();
+        releaseParking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseObject testObject = new ParseObject("TestObject");
-                testObject.put(latitude +"", longitude+"");
+                ParseObject testObject = new ParseObject("AvailableParking");
+                testObject.put("Longitude", longiStr);
+                testObject.put("Latitude", latiStr);
                 testObject.saveInBackground();
-                Toast.makeText(getApplicationContext(), "Parking freed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), latitude+"", Toast.LENGTH_LONG).show();
+//                Intent releaseParkingActivity = new Intent(FirstScreen.this, ReleaseParking.class);
+//                startActivity(releaseParkingActivity);
             }
         });
+//        testObject.put("foo", "bar");
+//        testObject.saveInBackground();
+
+
+//        ParseObject testObject = new ParseObject("TestObject");
+//        testObject.put(latitude +"", longitude+"");
+//        testObject.saveInBackground();
+
+
+//        saveParking.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ParseObject testObject = new ParseObject("TestObject");
+//                testObject.put(latitude +"", longitude+"");
+//                testObject.saveInBackground();
+//                Toast.makeText(getApplicationContext(), "Parking freed", Toast.LENGTH_LONG).show();
+//            }
+//        });
     }
 
 

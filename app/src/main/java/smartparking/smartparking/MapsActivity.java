@@ -8,7 +8,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +22,14 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -28,7 +39,6 @@ public class MapsActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
@@ -42,15 +52,28 @@ public class MapsActivity extends FragmentActivity {
                 return false;
             }
         });
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("AvailableParking");
+        List<ParseObject> ob = null;
+        try {
+            ob = query.find();
+        } catch (ParseException e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+        if (ob.size() > 0) {
+            // IS INSTALLED ON DEVICE..!!!
+            for (ParseObject mediObject : ob) {
+                String Longitude = mediObject.get("Longitude").toString();
+                String Latitude = mediObject.get("Latitude").toString();
+                double longi = Double.parseDouble(Longitude);
+                double lati = Double.parseDouble(Latitude);
+                    Log.d("score", Longitude);
+                    Log.d("score", Latitude);
 
-        // show the user all available parking slots (taken from DB)
-
-
-        /// TO DO
-
-
-
-       ///////////////////////////////////////////////////////////////
+                float Rand = (float) (Math.random() * (360));
+                mMap.addMarker(new MarkerOptions().position(new LatLng(lati, longi)).icon(BitmapDescriptorFactory.defaultMarker(Rand)));
+            }
+        };
 
     }
 
